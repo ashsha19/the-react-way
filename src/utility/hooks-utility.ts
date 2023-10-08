@@ -5,6 +5,7 @@ export function ue(callback: (...params: any) => any, dependencies: DependencyLi
     useEffect(boundCallback, dependencies);
 }
 
+// not yet used and tested
 export function uc(callback: (...params: any) => any, dependencies: DependencyList, ...params) {
     const args = [...callback.arguments, ...params];
     const boundCallback = callback.bind(null, ...args);
