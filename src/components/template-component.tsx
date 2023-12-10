@@ -1,34 +1,34 @@
 import React from "react";
-import { IRWInternalComponentProps } from "./rw-component";
+import { IInternalComponentProps } from "./rw-component";
 import { OperationStatus, useRWContext } from "../context/execution-context";
 
-export function RWIfTrue(props: IRWInternalComponentProps) {
+export function IfTrue(props: IInternalComponentProps) {
     // return <>{props.children}</>;
     // const lastContext = React.useContext(ExecutionContext);
     const [lastContext] = useRWContext(props.contextName);
     return Boolean(lastContext?.result) ? <>{props.children}</> : null;
 }
 
-export function RWElse(props: IRWInternalComponentProps) {
+export function Else(props: IInternalComponentProps) {
     // return <>{props.children}</>;
     // const lastContext = React.useContext(ExecutionContext);
     const [lastContext] = useRWContext(props.contextName);
     return Boolean(lastContext?.result) ? null : <>{props.children}</>;
 }
 
-export function RWComplete(props: IRWInternalComponentProps) {
+export function Complete(props: IInternalComponentProps) {
     // const lastContext = React.useContext(ExecutionContext);
     const [lastContext] = useRWContext(props.contextName);
     return lastContext?.status === OperationStatus.Completed ? <>{props.children}</> : null;
 }
 
-export function RWInProgress(props: IRWInternalComponentProps) {
+export function InProgress(props: IInternalComponentProps) {
     // const lastContext = React.useContext(ExecutionContext);
     const [lastContext] = useRWContext(props.contextName);
     return lastContext?.status === OperationStatus.InProgress ? <>{props.children}</> : null;
 }
 
-export function RWFailed(props: IRWInternalComponentProps) {
+export function Failed(props: IInternalComponentProps) {
     // const lastContext = React.useContext(ExecutionContext);
     const [lastContext] = useRWContext(props.contextName);
     return lastContext?.status === OperationStatus.Failed ? <>{props.children}</> : null;

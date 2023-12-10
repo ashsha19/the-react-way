@@ -1,7 +1,7 @@
 
 export const log = {
     message: (...params) => {
-        // console.log(...params);
+        console.log(...params);
     }
 };
 

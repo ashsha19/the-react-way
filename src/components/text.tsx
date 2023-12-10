@@ -1,15 +1,14 @@
 import * as React from 'react';
 import { useRWContext } from '../context/execution-context';
-import { IRWContextBasedComponentProps } from './rw-component';
+import { IContextBasedComponentProps } from './rw-component';
 import * as hooks from '../utility/hooks-utility';
 
-interface IRWDataItemProps extends IRWContextBasedComponentProps {
+interface ITextProps extends IContextBasedComponentProps {
     fieldname?: string;
-    select?: (data: { [key: string]: any }, index: number) => any;
-    updateSignal?: any;
+    select?: (data: { [key: string]: any }, index: number) => string | number;
 }
 
-export function RWDataItem(props: IRWDataItemProps) {
+export function Text(props: ITextProps) {
     // const lastContext = React.useContext(ExecutionContext);
     const [lastContext] = useRWContext(props.contextName);
     const data = lastContext.data;
@@ -17,10 +16,10 @@ export function RWDataItem(props: IRWDataItemProps) {
 
     if (props.select !== undefined) {
         // return React.useMemo(() => props.select(data, index), [props.updateSignal]);
-        return hooks.um((data) => props.select(data, index), [props.updateSignal], data);
+        return hooks.um((data) => props.select(data, index), [props.updateSignal, lastContext.updateSignal], data);
     }
 
-    return data[props.fieldname];
+    return data?.[props.fieldname];
 }
 
 

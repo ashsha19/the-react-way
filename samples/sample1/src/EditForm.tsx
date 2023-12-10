@@ -68,7 +68,7 @@ export default function EditForm(props: { handleCloseEditForm: () => void }) {
                 }}
             />
             <rw.RWComponent
-                component={<rw.RWPut endpoint='' initiateSignal={formDataObj || undefined} body={formDataObj} />}
+                component={<rw.HttpPut endpoint='' initiateSignal={formDataObj || undefined} body={formDataObj} />}
                 valueProps={{
                     endpoint: (post) => `https://jsonplaceholder.typicode.com/posts/${post.id}`
                 }} />

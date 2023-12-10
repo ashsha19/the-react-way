@@ -1,18 +1,21 @@
 import * as React from 'react';
 import { useRWContext } from '../context/execution-context';
 import * as hooks from '../utility/hooks-utility';
+import { log } from '../utility/log-utility';
 // import { useContext } from 'react';
 
 
-export interface IRWContextBasedComponentProps {
+export interface IContextBasedComponentProps {
     contextName?: string;
+    updateSignal?: any;
 }
 
-export interface IRWInternalComponentProps extends IRWContextBasedComponentProps {
-    children?: React.ReactNode | React.ReactElement | React.ReactElement[];
+export interface IInternalComponentProps extends IContextBasedComponentProps {
+    // children?: React.ReactNode | React.ReactElement | React.ReactElement[];
+    children?: React.ReactNode;
 }
 
-export interface IRWComponentProps {
+export interface IRWComponentProps extends IContextBasedComponentProps {
     contextName?: string;
     component: React.ReactElement;
     valueProps?: {
@@ -32,7 +35,7 @@ export function RWComponent(props: IRWComponentProps) {
     callbackProps = callbackProps || {};
 
     // const cloneCallbackProps = React.useMemo(() => {
-    const cloneCallbackProps = hooks.um<{}>((context, callbackProps) => {
+    const cloneCallbackProps = hooks.um((context, callbackProps) => {
         const _cloneProps = {};
 
         for (const property in callbackProps) {
@@ -46,10 +49,10 @@ export function RWComponent(props: IRWComponentProps) {
 
         return _cloneProps;
         // }, [contextName, component, callbackProps]);
-    }, [contextName, component, callbackProps], context, callbackProps);
+    }, [contextName, props.updateSignal, context.updateSignal], context, callbackProps);
 
     // const cloneValueProps = React.useMemo(() => {
-    const cloneValueProps = hooks.um<{}>((context, valueProps) => {
+    const cloneValueProps = hooks.um((context, valueProps) => {
         const _cloneProps = {};
 
         for (const property in valueProps) {
@@ -58,9 +61,12 @@ export function RWComponent(props: IRWComponentProps) {
 
         return _cloneProps;
         // }, [contextName, component, valueProps]);
-    }, [contextName, component, valueProps], context, valueProps);
+    }, [contextName, props.updateSignal, context.updateSignal], context, valueProps);
 
-    return React.cloneElement(component, { ...cloneValueProps, ...cloneCallbackProps });
+    // log.message('RWComponent', component)
+
+    // return React.cloneElement(component, { ...cloneValueProps, ...cloneCallbackProps });
+    return React.createElement(component.type, { key: component.key, ...cloneValueProps, ...cloneCallbackProps }, component.props.children);
     // return (component);
 }
 

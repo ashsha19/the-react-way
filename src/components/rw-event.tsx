@@ -1,9 +1,9 @@
 import * as React from 'react';
 import { OperationStatus, useRWContext } from '../context/execution-context';
-import { IRWContextBasedComponentProps } from './rw-component';
+import { IContextBasedComponentProps } from './rw-component';
 import { log } from '../utility/log-utility';
 
-interface IRWEventProps extends IRWContextBasedComponentProps {
+interface IRWEventProps extends IContextBasedComponentProps {
     onProgress?: () => void;
     onCompleted?: (data: any, index?: number) => void;
     onFailed?: () => void;

@@ -1,18 +1,20 @@
 import * as React from 'react';
 import { IExecutionContext, useRWContext } from '../context/execution-context';
-import { IRWInternalComponentProps } from './rw-component';
+import { IInternalComponentProps } from './rw-component';
 import * as hooks from '../utility/hooks-utility';
+import { RWDataContext } from './rw-data-context';
 
-export interface IRWIterateProps extends IRWInternalComponentProps {
+export interface IIterateProps extends IInternalComponentProps {
     until?: (data: any[], index: number) => boolean;
     updateSignal?: any;
 }
 
-export function RWIterate(props: IRWIterateProps) {
+export function Iterate(props: IIterateProps) {
     // let lastContext = React.useContext(ExecutionContext);
-    const [lastContext, ExecutionContext] = useRWContext(props.contextName);
+    const [lastContext] = useRWContext(props.contextName);
+    console.log('Iterate', lastContext);
 
-    const elements = hooks.um((props: IRWIterateProps, lastContext: IExecutionContext, ExecutionContext) => {
+    const elements = hooks.um((props: IIterateProps, lastContext: IExecutionContext) => {
         let elements = [];
         let counter = 0;
 
@@ -23,24 +25,30 @@ export function RWIterate(props: IRWIterateProps) {
                 if (!dataItem)
                     dataItem = lastContext.data;
 
-                elements.push(prepareElements(ExecutionContext, dataItem, counter, props.children));
+                elements.push(prepareElements(props.contextName, dataItem, counter, props.children, lastContext.updateSignal));
                 counter++;
             }
         }
         else {
             if (lastContext.data?.length) {
-                elements = lastContext.data.map((item, index) => prepareElements(ExecutionContext, item, index, props.children));
+                elements = lastContext.data.map((item, index) => prepareElements(props.contextName, item, index, props.children, lastContext.updateSignal));
             }
         }
 
         return elements;
-    }, props.updateSignal === undefined ? props.updateSignal : [props.updateSignal], props, lastContext, ExecutionContext);
+        // }, props.updateSignal === undefined ? props.updateSignal : [props.updateSignal, lastContext.updateSignal], props, lastContext, ExecutionContext);
+    }, [props.updateSignal, lastContext.updateSignal], props, lastContext);
 
     return <>{elements}</>;
 }
 
-function prepareElements(ExecutionContext: React.Context<IExecutionContext>, dataItem, index, children) {
-    return <ExecutionContext.Provider key={index} value={{ data: dataItem, index }}>
-        {children}
-    </ExecutionContext.Provider>;
+function prepareElements(
+    // ExecutionContext: React.Context<IExecutionContext>, 
+    contextName,
+    dataItem, index, children, updateSignal) {
+    // return <ExecutionContext.Provider key={index} value={{ data: dataItem, index, updateSignal }}>
+    //     {children}
+    // </ExecutionContext.Provider>;
+    return <RWDataContext key={index} contextName={contextName} data={dataItem} index={index} updateSignal={updateSignal}>
+        {children}</RWDataContext>;
 }

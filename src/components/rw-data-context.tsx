@@ -1,11 +1,12 @@
 import * as React from 'react';
 import { OperationStatus, useRWContext } from '../context/execution-context';
-import { IRWInternalComponentProps } from './rw-component';
+import { IInternalComponentProps } from './rw-component';
 import { log } from '../utility/log-utility';
 import * as hooks from '../utility/hooks-utility';
 
-interface IRWDataProps extends IRWInternalComponentProps {
+interface IRWDataContextProps extends IInternalComponentProps {
     data?: any;
+    index?: number;
     status?: OperationStatus;
     select?: (data: { [key: string]: any }, index: number) => any;
     filter?: (data: { [key: string]: any }, index: number) => boolean;
@@ -13,15 +14,19 @@ interface IRWDataProps extends IRWInternalComponentProps {
     updateSignal?: any;
 }
 
-export function RWData(props: IRWDataProps) {
+export function RWDataContext(props: IRWDataContextProps) {
     // const lastContext = React.useContext(ExecutionContext);
     const [lastContext, ExecutionContext] = useRWContext(props.contextName);
     let data = props.data;
     let status = props.status;
-    let index = lastContext.index;
+    let index = props.index;
 
     if (data === undefined) {
         data = lastContext.data;
+    }
+
+    if (index === undefined) {
+        index = lastContext.index;
     }
 
     if (status === undefined) {
@@ -34,20 +39,20 @@ export function RWData(props: IRWDataProps) {
 
     if (props.transform !== undefined) {
         // data = React.useMemo(() => props.transform(data), [props.updateSignal]);
-        data = hooks.um((data) => props.transform(data), [props.updateSignal], data);
+        data = hooks.um((data) => props.transform(data), [props.updateSignal, lastContext.updateSignal], data);
     }
 
     if (props.filter !== undefined) {
         // data = React.useMemo(() => data?.filter((item, index) => props.filter(item, index)), [props.updateSignal]);
-        data = hooks.um((data) => data?.filter((item, index) => props.filter(item, index)), [props.updateSignal], data);
+        data = hooks.um((data) => data?.filter((item, index) => props.filter(item, index)), [props.updateSignal, lastContext.updateSignal], data);
     }
 
     if (props.select !== undefined) {
         // data = React.useMemo(() => data?.map((item, index) => props.select(item, index)), [props.updateSignal]);
-        data = hooks.um((data) => data?.map((item, index) => props.select(item, index)), [props.updateSignal], data);
+        data = hooks.um((data) => data?.map((item, index) => props.select(item, index)), [props.updateSignal], lastContext.updateSignal, data);
     }
 
-    return <ExecutionContext.Provider value={{ data, index, status }}>
+    return <ExecutionContext.Provider value={{ data, index, status, updateSignal: props.updateSignal }}>
         {/* {propData} */}
         {props.children}
     </ExecutionContext.Provider>;

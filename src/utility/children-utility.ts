@@ -13,7 +13,7 @@ export function getHTTPTemplateChildren(children: React.ReactElement | React.Rea
             if (child.type === 'RWProgress') {
                 progressComponent = child;
             }
-            else if (child.type === 'RWComplete') {
+            else if (child.type === 'Complete') {
                 completeComponent = child;
             }
         });

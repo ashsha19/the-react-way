@@ -1,13 +1,13 @@
 import * as React from 'react';
 import { useRWContext } from '../context/execution-context';
-import { IRWInternalComponentProps } from './rw-component';
+import { IInternalComponentProps } from './rw-component';
 // import { IRWComponentProps } from './rw-component';
 
-interface IRWConditionProps extends IRWInternalComponentProps {
+interface IConditionProps extends IInternalComponentProps {
     condition: (data: any, index: number) => boolean;
 }
 
-export function RWCondition(props: IRWConditionProps) {
+export function Condition(props: IConditionProps) {
     // const lastContext = React.useContext(ExecutionContext);
     const [lastContext] = useRWContext(props.contextName);
     const data = lastContext.data;

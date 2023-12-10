@@ -12,7 +12,7 @@ export function uc(callback: (...params: any) => any, dependencies: DependencyLi
     return useCallback(boundCallback, dependencies);
 }
 
-export function um<T>(callback: (...params: any) => any, dependencies: DependencyList, ...params): T {
+export function um<T>(callback: (...params: any) => T, dependencies: DependencyList, ...params): T {
     const boundCallback = callback.bind(null, ...params);
     return useMemo<T>(boundCallback, dependencies);
 }

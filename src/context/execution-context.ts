@@ -1,5 +1,6 @@
 import * as React from "react";
 import { log } from "../utility/log-utility";
+import { ue } from "../utility/hooks-utility";
 
 export enum OperationStatus {
     Dormant,
@@ -17,6 +18,7 @@ export interface IExecutionContext {
     result?: OperationResult;
     data?: any;
     index?: number;
+    updateSignal?: any;
 }
 
 // export const ExecutionContext = React.createContext<IExecutionContext>({});
@@ -25,7 +27,9 @@ const ContextMap: {
 } = {};
 
 export function useRWContext(contextName: string = 'default'): [IExecutionContext, RWContext] {
-    let reactContext = React.useMemo(() => {
+    let [reactContext, isParentContextComponent] = React.useMemo(() => {
+        let _isParentContextComponent = false;
+
         if (!contextName) {
             // return ExecutionContext;
             contextName = 'default';
@@ -33,14 +37,23 @@ export function useRWContext(contextName: string = 'default'): [IExecutionContex
 
         if (!ContextMap[contextName]) {
             ContextMap[contextName] = React.createContext<IExecutionContext>({});
+            _isParentContextComponent = true;
         }
 
-        return ContextMap[contextName];
+        return [ContextMap[contextName], _isParentContextComponent];
     }, [contextName]);
 
-    // reactContext = ExecutionContext;
+    // // removing reference of context object on unmount
+    // ue(() => {
+    //     return () => {
+    //         if (isParentContextComponent) {
+    //             ContextMap[contextName] = null;
+    //             delete ContextMap[contextName];
+    //         }
+    //     }
+    // }, []);
 
-    log.message('RWContext', reactContext, ContextMap);
+    // log.message('RWContext', reactContext, ContextMap);
     const lastContext = React.useContext(reactContext);
 
     return [lastContext, reactContext];

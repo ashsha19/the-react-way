@@ -1,16 +1,15 @@
 import * as React from 'react';
 import { useRWContext } from '../context/execution-context';
-import { IRWInternalComponentProps } from './rw-component';
+import { IInternalComponentProps } from './rw-component';
 import * as hooks from '../utility/hooks-utility';
 
-interface IRWTimerProps extends IRWInternalComponentProps {
+interface ITimerProps extends IInternalComponentProps {
     internal: number;
     until?: (data: any, index: number) => boolean;
     cancelWith?: any;
-    // children?: React.ReactNode;
 }
 
-export function RWTimer(props: IRWTimerProps) {
+export function Timer(props: ITimerProps) {
     // const lastContext = React.useContext(ExecutionContext);
     const [lastContext, ExecutionContext] = useRWContext(props.contextName);
     const data = lastContext.data;
@@ -52,9 +51,14 @@ export function RWTimer(props: IRWTimerProps) {
             clearTimeout(timeoutInfo.timeoutNumber);
         }
     }, [props.cancelWith]);
+    
+    // clear timeout if any, when unmount
+    React.useEffect(() => {
+        clearTimeout(timeoutInfo.timeoutNumber);
+    }, []);
 
     return timeoutInfo.timeoutNumber > 0 ?
-        <ExecutionContext.Provider value={{ data, index: timeoutInfo.index }}>
+        <ExecutionContext.Provider value={{ data, index: timeoutInfo.index, updateSignal: timeoutInfo.timeoutNumber }}>
             {/* changing key of fragment component to initiate rerender */}
             <React.Fragment key={timeoutInfo.timeoutNumber}>{props.children}</React.Fragment>
         </ExecutionContext.Provider> : null;
