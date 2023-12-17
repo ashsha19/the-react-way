@@ -52,19 +52,22 @@ export function HttpGet(props: IHttpGetProps) {
                 });
             }
         })();
-
-        return () => {
-            abortController?.abort();
-        };
         // }, [props.initiateSignal]);
     }, [props.updateSignal, lastContext.updateSignal], props);
 
     // checking for cancel signal to cancel request
-    React.useEffect(() => {
+    React.useMemo(() => {
         if (props.cancelSignal !== undefined) {
             abortController?.abort();
         }
     }, [props.cancelSignal]);
+
+    // on unmount
+    hooks.ue(() => {
+        return () => {
+            abortController?.abort();
+        };
+    }, []);
 
     return <RWDataContext contextName={props.contextName} data={data} status={status} updateSignal={updateSignal}>
         {props.children}

@@ -48,23 +48,26 @@ export function HttpDelete(props: IHttpDeleteProps) {
             }
             catch {
                 setDataContextObj((prevState) => {
-                    return { data: prevState.data, status: OperationStatus.Failed, updateSignal: prevState.updateSignal }
+                    return { data: prevState.data, status: OperationStatus.Failed, updateSignal: !prevState.updateSignal }
                 });
             }
         })();
-
-        return () => {
-            abortController?.abort();
-        };
         // }, [props.initiateSignal]);
     }, [props.updateSignal, lastContext.updateSignal], props);
 
-// checking for cancel signal to cancel request
-    React.useEffect(() => {
+    // checking for cancel signal to cancel request
+    React.useMemo(() => {
         if (props.cancelSignal !== undefined) {
             abortController?.abort();
         }
     }, [props.cancelSignal]);
+    
+    // on unmount
+    hooks.ue(() => {
+        return () => {
+            abortController?.abort();
+        };
+    }, []);
 
     return <RWDataContext contextName={props.contextName} data={data} status={status} updateSignal={updateSignal}>
         {props.children}
