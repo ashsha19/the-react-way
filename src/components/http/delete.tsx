@@ -56,7 +56,7 @@ export function HttpDelete(props: IHttpDeleteProps) {
     }, [props.updateSignal, lastContext.updateSignal], props);
 
     // checking for cancel signal to cancel request
-    React.useMemo(() => {
+    hooks.ue(() => {
         if (props.cancelSignal !== undefined) {
             abortController?.abort();
         }
@@ -65,7 +65,7 @@ export function HttpDelete(props: IHttpDeleteProps) {
     // on unmount
     hooks.ue(() => {
         return () => {
-            abortController?.abort();
+            if (status == OperationStatus.InProgress) { abortController?.abort(); }
         };
     }, []);
 

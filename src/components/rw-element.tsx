@@ -57,7 +57,7 @@ export function RWElement<T extends RWJSXElementName>(props: IRWElementProps<T>)
     }
 
     const elementProps = um((listProps: IRWElementProps<T>, lastContext, data) => {
-        log.message('RWElement.1', jsxType);
+        log.message('RWElement.' + jsxType);
 
         const elementProps = {};
         for (let propKey in listProps) {
@@ -106,7 +106,7 @@ export function RWElement<T extends RWJSXElementName>(props: IRWElementProps<T>)
     }, [jsxType]);
 
     const listElement = React.createElement(elementToRender, elementProps, children);
-    log.message('RWElement.2', jsxType, elementProps);
+    // log.message('RWElement.2', jsxType, elementProps);
     // const listElement = React.createElement(jsxType, elementProps, children);
     // const newListElement = React.cloneElement(listElement, elementProps, children);
 

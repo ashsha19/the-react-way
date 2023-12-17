@@ -56,7 +56,7 @@ export function HttpGet(props: IHttpGetProps) {
     }, [props.updateSignal, lastContext.updateSignal], props);
 
     // checking for cancel signal to cancel request
-    React.useMemo(() => {
+    hooks.ue(() => {
         if (props.cancelSignal !== undefined) {
             abortController?.abort();
         }
@@ -65,7 +65,7 @@ export function HttpGet(props: IHttpGetProps) {
     // on unmount
     hooks.ue(() => {
         return () => {
-            abortController?.abort();
+            if (status == OperationStatus.InProgress) { abortController?.abort(); }
         };
     }, []);
 

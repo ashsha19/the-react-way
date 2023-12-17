@@ -10,6 +10,7 @@ export * from './components/condition';
 export * from './components/rw-timer';
 export * from './components/rw-element';
 export * from './components/rw-event';
+export * from './components/rw-callback';
 export * from './components/template-component';
 export * from './components/event/event-base';
 export * from './components/event/event-collector';

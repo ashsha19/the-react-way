@@ -49,10 +49,14 @@ export function RWDataContext(props: IRWDataContextProps) {
 
     if (props.select !== undefined) {
         // data = React.useMemo(() => data?.map((item, index) => props.select(item, index)), [props.updateSignal]);
-        data = hooks.um((data) => data?.map((item, index) => props.select(item, index)), [props.updateSignal], lastContext.updateSignal, data);
+        data = hooks.um((data) => data?.map((item, index) => props.select(item, index)), [props.updateSignal, lastContext.updateSignal], data);
     }
 
-    return <ExecutionContext.Provider value={{ data, index, status, updateSignal: props.updateSignal }}>
+    const contextValue = hooks.um((data) => {
+        return { data, index, status, updateSignal: props.updateSignal };
+    }, [data, index, status, props.updateSignal, lastContext.updateSignal], data);
+
+    return <ExecutionContext.Provider value={contextValue}>
         {/* {propData} */}
         {props.children}
     </ExecutionContext.Provider>;

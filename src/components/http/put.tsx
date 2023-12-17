@@ -10,7 +10,6 @@ export interface IHttpPutProps extends IInternalComponentProps {
     endpoint: string;
     header?: { [key: string]: string };
     body?: any;
-    // initiateSignal?: any;
     cancelSignal?: any;
 }
 
@@ -50,23 +49,26 @@ export function HttpPut(props: IHttpPutProps) {
             }
             catch {
                 setDataContextObj((prevState) => {
-                    return { data: prevState.data, status: OperationStatus.Failed, updateSignal: prevState.updateSignal }
+                    return { data: prevState.data, status: OperationStatus.Failed, updateSignal: !prevState.updateSignal }
                 });
             }
         })();
-
-        return () => {
-            abortController?.abort();
-        };
         // }, [props.initiateSignal]);
     }, [props.updateSignal, lastContext.updateSignal], props);
 
-// checking for cancel signal to cancel request
-    React.useEffect(() => {
+    // checking for cancel signal to cancel request
+    hooks.ue(() => {
         if (props.cancelSignal !== undefined) {
             abortController?.abort();
         }
     }, [props.cancelSignal]);
+
+    // on unmount
+    hooks.ue(() => {
+        return () => {
+            if (status == OperationStatus.InProgress) { abortController?.abort(); }
+        };
+    }, []);
 
     return <RWDataContext contextName={props.contextName} data={data} status={status} updateSignal={updateSignal}>
         {props.children}
