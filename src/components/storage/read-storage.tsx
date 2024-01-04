@@ -7,6 +7,7 @@ import * as hooks from '../../utility/hooks-utility';
 interface IReadStorage extends IInternalComponentProps {
     type: 'local' | 'session';
     storageKey: string;
+    default?: any;
 }
 
 export function ReadStorage(props: IReadStorage) {
@@ -17,6 +18,7 @@ export function ReadStorage(props: IReadStorage) {
         if (_data !== undefined) {
             return JSON.parse(_data);
         }
+        return props.default;
     }, [props.storageKey, props.updateSignal]);
 
     return <RWDataContext contextName={props.contextName} data={data} status={OperationStatus.Completed}>{props.children}</RWDataContext>;

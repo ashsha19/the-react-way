@@ -18,10 +18,10 @@ export function WriteStorage(props: IWriteStorage) {
         data = lastContext.data;
     }
 
-    hooks.um(() => {
+    hooks.um((data) => {
         const storageType = props.type + 'Storage';
         window[storageType][props.storageKey] = JSON.stringify(data);
-    }, [props.storageKey, props.updateSignal, lastContext.updateSignal]);
+    }, [props.storageKey, props.updateSignal, lastContext.updateSignal], data);
 
     return <RWDataContext contextName={props.contextName} data={data} status={OperationStatus.Completed}>{props.children}</RWDataContext>;
 }
