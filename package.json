@@ -1,6 +1,6 @@
 {
   "name": "the-react-way",
-  "version": "1.1.10",
+  "version": "1.1.11",
   "description": "The library is a react-based library designed to facilitate writing more declarative code. The React Way helps writing less code for obvious things with intuitive abstractions and a declarative programming paradigm. With declarative approach, the effort is enhance readability, maintainability, and reusability of the components.",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",

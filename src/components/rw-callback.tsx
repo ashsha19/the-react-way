@@ -2,6 +2,7 @@ import * as React from 'react';
 import { useRWContext } from '../context/execution-context';
 import { IContextBasedComponentProps } from './rw-component';
 import { log } from '../utility/log-utility';
+import * as hooks from '../utility/hooks-utility';
 
 interface IRWCallbackProps extends IContextBasedComponentProps {
     once?: boolean;
@@ -17,11 +18,13 @@ export function RWCallback(props: IRWCallbackProps) {
 
     const [called, setCalled] = React.useState(false);
 
-    if (props.once === undefined || (props.once && !called)) {
-        log.message('RWCallback');
-        setCalled(true);
-        props.call(data, index);
-    }
+    hooks.ue(() => {
+        if (props.once === undefined || (props.once && !called)) {
+            // log.message('RWCallback');
+            setCalled(true);
+            props.call(data, index);
+        }
+    }, undefined);
 
     return null;
 }
